@@ -24,7 +24,7 @@ export async function authAndRequest() {
 }
 
 
-export async function disableClientInXui(uuid: string,) {
+export async function disableClientInXui(uuid: string) {
   const api = await authAndRequest();
 
   const { data } = await api.get('/dkvpn/panel/api/inbounds/list');
@@ -39,26 +39,32 @@ export async function disableClientInXui(uuid: string,) {
 
   const settings = JSON.parse(inbound.settings);
 
-  const updatedClients = settings.clients.map((client: any) => {
-    if (client.id === uuid) {
-      return { ...client, enable: false };
-    }
-    return client;
-  });
+  const targetClient = settings.clients.find((client: any) => client.id === uuid);
+  if (!targetClient) throw new Error(`❌ Клиент с UUID ${uuid} не найден в inbound`);
+
+  const updatedClient = {
+    ...targetClient,
+    expiryTime: 0,
+    enable: false
+  };
 
   const payload = {
-    id: 1,
-    settings: JSON.stringify({ clients: updatedClients }) 
+    id: inbound.id, // обязательно использовать правильный inbound
+    settings: JSON.stringify({ clients: [updatedClient] }) // ❗️ только один клиент!
   };
-  logger.info(uuid,updatedClients);
-  const response = await api.post(`/dkvpn/panel/api/inbounds/updateClient/${uuid}`, payload);
 
+  logger.info(`🔧 Отключаем UUID: ${uuid}, inbound ID: ${inbound.id}`);
+  logger.debug('📦 Payload:', payload);
+
+  const response = await api.post(`/dkvpn/panel/api/inbounds/updateClient/${uuid}`, payload);
+  logger.info(`✅ XUI: клиент ${uuid} отключён`);
   if (!response.data.success) {
     throw new Error(`❌ Не удалось отключить клиента: ${response.data.msg}`);
   }
 
-  logger.info(`✅ XUI: клиент ${uuid} отключён`);
+
 }
+
 
 export async function createVpnClient(uuid: string, remark: string, telegramId: number) {
   const api = await authAndRequest();

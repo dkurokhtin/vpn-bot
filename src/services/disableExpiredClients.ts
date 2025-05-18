@@ -39,11 +39,13 @@ export async function disableExpiredClients() {
           parse_mode: 'Markdown',
           reply_markup: {
             inline_keyboard: [
+                [{ text: '🧾 Статус', callback_data: 'status' }],
               [{ text: '🔁 Продлить подписку', callback_data: 'extend' }]
             ]
           }
         }
       );
+      continue;
     } catch (err) {
       logger.error({ err }, `❌ Ошибка при отключении ${user.username}`);
     }

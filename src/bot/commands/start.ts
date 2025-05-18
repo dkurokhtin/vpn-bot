@@ -3,6 +3,7 @@ import User from '../../db/models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { createVpnClient } from '../../services/xuiService';
 import logger from '../../logger';
+import { disableExpiredClients } from '../../services/disableExpiredClients';
 
 export async function startCommand(ctx: Context) {
   const guideLink = `https://dkurokhtin.github.io/vpn-docs/#/`
@@ -11,16 +12,6 @@ export async function startCommand(ctx: Context) {
   if (!telegramId) return ctx.reply("Ошибка: не удалось получить ваш Telegram ID");
 
   let user = await User.findOne({ telegramId });
-await User.updateOne(
-        { telegramId: 394971301 },
-        {
-          $set: {
-            subscriptionEndsAt: new Date(Date.now() - 60 * 1000),
-            disabled: false,
-            notifiedExpired: false
-          }
-        }
-      );
   if (user) {
     
     return ctx.reply(

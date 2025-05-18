@@ -20,19 +20,28 @@ export async function statusCommand(ctx: Context) {
   const now = Date.now();
   const expiresAt = user.subscriptionEndsAt?.getTime() || 0;
   const isActive = expiresAt > now;
+  
   const statusText = isActive ? '✅ Активна' : '❌ Истекла';
+  const expiresAtFormatted = new Date(expiresAt).toLocaleString('ru-RU', {
+    timeZone: 'Europe/Moscow',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+  
+  const message = `🔐 *Статус подписки*\n${statusText}\n` +
+                  `📅 Срок действия до: ${expiresAtFormatted}\n`;
+  
 
   const expiresDate = new Date(expiresAt).toLocaleString('ru-RU');
   const daysLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)));
 
   return ctx.reply(
-    `📡 *Статус подписки*\n\n` +
+    `📡 *Личный кабинет*\n\n` +
     `👤 Пользователь: @${username}\n` +
     `🆔 Telegram ID: ${telegramId}\n` +
     `🔐 UUID: \`${user.xrayUuid}\`\n\n` +
-    `📆 До: *${expiresDate}*\n` +
+    message +
     `📊 Осталось: *${daysLeft} дней*\n` +
-    `🧾 Статус: *${statusText}*\n\n` +
     `🔗 Ваша VPN-ссылка:\n\`\`\`\n${user.vpnConfigUrl}\n\`\`\``,
     {
       parse_mode: 'Markdown',
