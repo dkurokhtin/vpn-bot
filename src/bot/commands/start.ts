@@ -2,6 +2,7 @@ import { Context, Markup } from 'telegraf';
 import User from '../../db/models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { createVpnClient } from '../../services/xuiService';
+import logger from '../../logger';
 
 export async function startCommand(ctx: Context) {
   const guideLink = `https://dkurokhtin.github.io/vpn-docs/#/`
@@ -10,14 +11,31 @@ export async function startCommand(ctx: Context) {
   if (!telegramId) return ctx.reply("Ошибка: не удалось получить ваш Telegram ID");
 
   let user = await User.findOne({ telegramId });
-
+await User.updateOne(
+        { telegramId: 394971301 },
+        {
+          $set: {
+            subscriptionEndsAt: new Date(Date.now() - 60 * 1000),
+            disabled: false,
+            notifiedExpired: false
+          }
+        }
+      );
   if (user) {
+    
     return ctx.reply(
-        `👋 Вы уже зарегистрированы!\n` +
-        `🔗 Ваша VPN-ссылка (скопируйте вручную):\n\`\`\`\n${user.vpnConfigUrl}\n\`\`\`\n\n`,
-        { parse_mode: 'Markdown' ,...Markup.inlineKeyboard([
+        `🎉 Добро пожаловать!\n` +
+        `🗓️ Подписка активна 7 дней.\n\n` +
+        `🔗 Ваша VPN-ссылка:\n` +
+        `\`\`\`\n${user.vpnConfigUrl}\n\`\`\``,
+        {
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard([
+            [Markup.button.callback('📊 Статус', 'status')],
+            [Markup.button.callback('🔁 Продлить подписку', 'extend')],
             [Markup.button.url('📖 Инструкция', guideLink)]
-          ])}
+          ])
+        }
       );
     
   }
@@ -44,11 +62,12 @@ export async function startCommand(ctx: Context) {
         `🔗 Ваша VPN-ссылка (скопируйте вручную):\n\`\`\`\n${vpnLink}\n\`\`\`\n\n` +
         `⚙️ Инструкция по подключению для iPhone:\n${guideLink}`,
         { parse_mode: 'Markdown', ...Markup.inlineKeyboard([
+            [Markup.button.callback('⚙️ Статус', 'status')],
             [Markup.button.url('📖 Инструкция', guideLink)]
           ])}
       );
   } catch (error: any) {
-    console.error('❌ Ошибка при создании клиента в XUI:', error.message);
+    logger.error('❌ Ошибка при создании клиента в XUI:', error.message);
     return ctx.reply('❌ Не удалось создать VPN-доступ. Обратитесь в поддержку.');
   }
 }

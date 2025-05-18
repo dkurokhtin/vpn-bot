@@ -1,6 +1,7 @@
 import axios from 'axios';
 import https from 'https';
 import { v4 as uuidv4 } from 'uuid';
+import logger from '../logger';
 const XUI_BASE_URL = process.env.XUI_API || 'https://185.242.86.253:2053';
 
 // Вставь cookie из Postman сюда (только значение, без "3x-ui=" и без ; Path=...)
@@ -23,7 +24,41 @@ export async function authAndRequest() {
 }
 
 
+export async function disableClientInXui(uuid: string,) {
+  const api = await authAndRequest();
 
+  const { data } = await api.get('/dkvpn/panel/api/inbounds/list');
+  const inbounds = data.obj;
+
+  const inbound = inbounds.find((inb: any) => {
+    const settings = JSON.parse(inb.settings);
+    return settings.clients?.some((client: any) => client.id === uuid);
+  });
+
+  if (!inbound) throw new Error(`❌ Inbound с UUID ${uuid} не найден`);
+
+  const settings = JSON.parse(inbound.settings);
+
+  const updatedClients = settings.clients.map((client: any) => {
+    if (client.id === uuid) {
+      return { ...client, enable: false };
+    }
+    return client;
+  });
+
+  const payload = {
+    id: 1,
+    settings: JSON.stringify({ clients: updatedClients }) 
+  };
+  logger.info(uuid,updatedClients);
+  const response = await api.post(`/dkvpn/panel/api/inbounds/updateClient/${uuid}`, payload);
+
+  if (!response.data.success) {
+    throw new Error(`❌ Не удалось отключить клиента: ${response.data.msg}`);
+  }
+
+  logger.info(`✅ XUI: клиент ${uuid} отключён`);
+}
 
 export async function createVpnClient(uuid: string, remark: string, telegramId: number) {
   const api = await authAndRequest();
@@ -66,7 +101,7 @@ export async function createVpnClient(uuid: string, remark: string, telegramId: 
 
   // 4. Выполняем запрос
   const res = await api.post('/dkvpn/panel/api/inbounds/addClient', payload);
-  console.log('✅ Добавление клиента:', res.data);
+  logger.info('✅ Добавление клиента:', res.data);
 
   if (!res.data.success) {
     throw new Error(`❌ Ошибка от XUI: ${res.data.msg}`);
@@ -74,3 +109,4 @@ export async function createVpnClient(uuid: string, remark: string, telegramId: 
 
   return res.data;
 }
+
