@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import https from 'https';
+import { HttpCookieAgent, HttpsCookieAgent } from 'http-cookie-agent/http';
 import { CookieJar } from 'tough-cookie';
 import logger from '../logger';
 
@@ -7,19 +7,20 @@ const XUI_BASE_URL = process.env.XUI_BASE_URL || 'https://185.242.86.253:2053';
 
 let apiPromise: Promise<AxiosInstance> | null = null;
 
+function createApi(): AxiosInstance {
+  const jar = new CookieJar();
+
+  return axios.create({
+    baseURL: XUI_BASE_URL,
+    httpAgent: new HttpCookieAgent({ cookies: { jar } }),
+    httpsAgent: new HttpsCookieAgent({ cookies: { jar }, rejectUnauthorized: false }),
+    withCredentials: true,
+  });
+}
+
 async function getApi(): Promise<AxiosInstance> {
   if (!apiPromise) {
-    apiPromise = import('axios-cookiejar-support').then(({ wrapper }) => {
-      const jar = new CookieJar();
-      return wrapper(
-        axios.create({
-          baseURL: XUI_BASE_URL,
-          httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-          jar,
-          withCredentials: true,
-        })
-      );
-    });
+    apiPromise = Promise.resolve(createApi());
   }
   return apiPromise;
 }
