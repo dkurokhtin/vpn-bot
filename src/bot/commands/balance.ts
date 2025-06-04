@@ -1,9 +1,9 @@
-import { Context } from 'telegraf';
-import User from '../../db/models/User';
 import { Markup } from 'telegraf';
+import User from '../../db/models/User';
 import { updateMenu } from '../../utils/updateMenu';
+import { BotContext } from '../context';
 
-export async function balanceCommand(ctx: Context) {
+export async function balanceCommand(ctx: BotContext) {
   const telegramId = ctx.from?.id;
   if (!telegramId) return;
 

@@ -59,6 +59,7 @@ MONGODB_URI=mongodb://localhost:27017/vpn-bot
 XUI_BASE_URL=https://your-xui-host:port
 XUI_USERNAME=admin
 XUI_PASSWORD=admin
+XUI_SESSION_COOKIE=your-session-cookie
 VPN_HOST=your.vpn.host
 VPN_PUBLIC_KEY=...
 ```
@@ -72,7 +73,7 @@ VPN_PUBLIC_KEY=...
 npm install
 
 # Запуск бота
-npm run dev
+npm run start
 ```
 
 ---

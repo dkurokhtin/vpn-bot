@@ -5,7 +5,7 @@ import logger from '../logger';
 const XUI_BASE_URL = process.env.XUI_API || 'https://185.242.86.253:2053';
 
 // Вставь cookie из Postman сюда (только значение, без "3x-ui=" и без ; Path=...)
-const sessionCookie = '3x-ui=MTc0NzU3Mzc1OHxEWDhFQVFMX2dBQUJFQUVRQUFCMV80QUFBUVp6ZEhKcGJtY01EQUFLVEU5SFNVNWZWVk5GVWhoNExYVnBMMlJoZEdGaVlYTmxMMjF2WkdWc0xsVnpaWExfZ1FNQkFRUlZjMlZ5QWYtQ0FBRUVBUUpKWkFFRUFBRUlWWE5sY201aGJXVUJEQUFCQ0ZCaGMzTjNiM0prQVF3QUFRdE1iMmRwYmxObFkzSmxkQUVNQUFBQVlmLUNYZ0VDQVFwa2EzVnliMnRvZEdsdUFRdE1kbUp1YUdKeE1USXBLQUZBWlVJMWIxRTNjRFJwYzFOeVFqZDJOMmQ0U1VSVU0wSm1UelJzZG5saFRGUTVhMVUyYWxGNk1sbFZUazVxVXpGT1FYUmtWMHN5YjFneVNuaFVPWEpKTXdBPXyLxmqERI0uWz-iIm5VCX2FJ5catn7nEoni3XeEEuxdQg==';
+const sessionCookie = process.env.XUI_SESSION_COOKIE || '';
 
 export async function authAndRequest() {
   const api = axios.create({
@@ -17,8 +17,7 @@ export async function authAndRequest() {
   });
 
   // Проверим доступ
-  const res = await api.get('/dkvpn/panel/api/inbounds/list');
-  console.log('🧪 Проверка API: ', res.data);
+  await api.get('/dkvpn/panel/api/inbounds/list');
 
   return api;
 }

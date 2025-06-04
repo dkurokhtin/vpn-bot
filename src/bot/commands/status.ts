@@ -1,9 +1,9 @@
-import { Context } from 'telegraf';
-import User from '../../db/models/User';
 import { Markup } from 'telegraf';
+import User from '../../db/models/User';
 import { updateMenu } from '../../utils/updateMenu';
+import { BotContext } from '../context';
 
-export async function statusCommand(ctx: Context) {
+export async function statusCommand(ctx: BotContext) {
   const telegramId = ctx.from?.id;
   const username = ctx.from?.username || `user_${telegramId}`;
   const guideLink = 'https://dkurokhtin.github.io/vpn-docs/#/';
@@ -29,11 +29,9 @@ export async function statusCommand(ctx: Context) {
     timeStyle: 'short',
   });
   
-  const message = `🔐 *Статус подписки*: ${statusText}` +
-                  `📅 Срок действия до: ${expiresAtFormatted}`;
-  
-
-  const expiresDate = new Date(expiresAt).toLocaleString('ru-RU');
+  const message =
+    `🔐 *Статус подписки*: ${statusText}` +
+    `📅 Срок действия до: ${expiresAtFormatted}`;
   const daysLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)));
 
   return updateMenu(

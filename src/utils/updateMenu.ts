@@ -1,7 +1,8 @@
-import { Context, Markup } from 'telegraf';
+import { Markup } from 'telegraf';
+import { BotContext } from '../bot/context';
 
 export async function updateMenu(
-  ctx: Context,
+  ctx: BotContext,
   text: string,
   keyboard: ReturnType<typeof Markup.inlineKeyboard>
 ) {

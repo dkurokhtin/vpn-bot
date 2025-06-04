@@ -1,4 +1,5 @@
 import { Telegraf } from 'telegraf';
+import { BotContext } from './context';
 import dotenv from 'dotenv';
 import { startCommand } from './commands/start';
 import { statusCommand } from './commands/status';
@@ -12,15 +13,15 @@ import { loadUser } from './middleware/loadUser';
 import mongoose from 'mongoose';
 import { mongooseSession } from '../session';
 
-export function registerActions(bot: Telegraf<any>) {
+export function registerActions(bot: Telegraf<BotContext>) {
 
     bot.action('status', wrapCallbackAction(statusCommand));
     bot.action('extend', wrapCallbackAction(extendCommand));
     bot.action('get_qr', wrapCallbackAction(qrCommand));
   }
 dotenv.config();
-export const bot = new Telegraf(process.env.BOT_TOKEN!);
-mongoose.connect(process.env.MONGO_URI!, {
+export const bot = new Telegraf<BotContext>(process.env.BOT_TOKEN!);
+mongoose.connect(process.env.MONGODB_URI!, {
   dbName: 'vpn-bot',
 });
 bot.use(mongooseSession);

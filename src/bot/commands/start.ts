@@ -1,4 +1,5 @@
-import { Context, Markup } from 'telegraf';
+import { Markup } from 'telegraf';
+import { BotContext } from '../context';
 import User from '../../db/models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { createVpnClient } from '../../services/xuiService';
@@ -7,7 +8,7 @@ import logger from '../../logger';
 import { updateMenu } from '../../utils/updateMenu';
 import { statusCommand } from './status';
 
-export async function startCommand(ctx: Context) {
+export async function startCommand(ctx: BotContext) {
   const guideLink = `https://dkurokhtin.github.io/vpn-docs/#/`;
   const telegramId = ctx.from?.id;
 

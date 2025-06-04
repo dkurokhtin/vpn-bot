@@ -1,8 +1,8 @@
-import { Context } from 'telegraf';
 import User from '../../db/models/User';
 import { sendVpnConfigInfo } from '../../utils/sendVpnConfigInfo';
+import { BotContext } from '../context';
 
-export async function configCommand(ctx: Context) {
+export async function configCommand(ctx: BotContext) {
   const telegramId = ctx.from?.id;
 
   if (!telegramId) {

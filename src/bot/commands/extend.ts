@@ -1,8 +1,8 @@
-import { Context } from 'telegraf';
 import { Markup } from 'telegraf';
 import { updateMenu } from '../../utils/updateMenu';
+import { BotContext } from '../context';
 
-export async function extendCommand(ctx: Context) {
+export async function extendCommand(ctx: BotContext) {
   // Здесь в будущем будет логика оплаты
   return updateMenu(
     ctx,
