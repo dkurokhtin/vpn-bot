@@ -1,24 +1,11 @@
-import axios from 'axios';
-import https from 'https';
 import { v4 as uuidv4 } from 'uuid';
 import logger from '../logger';
-const XUI_BASE_URL = process.env.XUI_API || 'https://185.242.86.253:2053';
-
-// Вставь cookie из Postman сюда (только значение, без "3x-ui=" и без ; Path=...)
-const sessionCookie = process.env.XUI_SESSION_COOKIE || '';
+import { getAuthenticatedApi } from './xuiAuth';
 
 export async function authAndRequest() {
-  const api = axios.create({
-    baseURL: XUI_BASE_URL,
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    headers: {
-      Cookie: sessionCookie
-    }
-  });
-
+  const api = await getAuthenticatedApi();
   // Проверим доступ
   await api.get('/dkvpn/panel/api/inbounds/list');
-
   return api;
 }
 
