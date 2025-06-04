@@ -50,7 +50,7 @@ export async function statusCommand(ctx: BotContext) {
       `🔐 UUID: \`${user.xrayUuid}\`\n\n` +
       message +
       `📊 Осталось: *${daysLeft} дней*\n` +
-      `🔗 \`${escapeMarkdown(user.vpnConfigUrl ?? '')}\``,
+      `🔗 [Ваша VPN-ссылка](${user.vpnConfigUrl ?? ''})`,
     Markup.inlineKeyboard([
       [{ text: '🧾 Статус', callback_data: 'status' }],
       [{ text: '🔁 Продлить', callback_data: 'extend' }],
