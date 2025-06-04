@@ -2,8 +2,8 @@ import axios, { AxiosInstance } from 'axios';
 import { HttpCookieAgent, HttpsCookieAgent } from 'http-cookie-agent/http';
 import { CookieJar } from 'tough-cookie';
 import logger from '../logger';
+import { XUI_BASE_URL, XUI_USERNAME, XUI_PASSWORD } from '../config';
 
-const XUI_BASE_URL = process.env.XUI_BASE_URL || 'https://185.242.86.253:2053';
 
 let apiPromise: Promise<AxiosInstance> | null = null;
 
@@ -28,12 +28,8 @@ async function getApi(): Promise<AxiosInstance> {
 let loggedIn = false;
 
 async function login() {
-  const username = process.env.XUI_USERNAME;
-  const password = process.env.XUI_PASSWORD;
-
-  if (!username || !password) {
-    throw new Error('XUI_USERNAME or XUI_PASSWORD is not set');
-  }
+  const username = XUI_USERNAME;
+  const password = XUI_PASSWORD;
 
   logger.info('🔐 Выполняем авторизацию в XUI...');
   try {

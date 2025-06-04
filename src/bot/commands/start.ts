@@ -3,6 +3,7 @@ import { BotContext } from '../context';
 import User from '../../db/models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { createVpnClient } from '../../services/xuiService';
+import { VPN_HOST, VPN_PUBLIC_KEY } from '../../config';
 
 import logger from '../../logger';
 import { updateMenu } from '../../utils/updateMenu';
@@ -21,7 +22,7 @@ export async function acceptPolicy(ctx: BotContext) {
 
   const username = ctx.from?.username || `user_${telegramId}`;
   const uuid = uuidv4();
-  const vpnLink = `vless://${uuid}@${process.env.VPN_HOST}:443?encryption=none&flow=xtls-rprx-vision&type=tcp&security=reality&fp=chrome&sni=yahoo.com&pbk=${process.env.VPN_PUBLIC_KEY}&sid=&spx=%2F#${username}`;
+  const vpnLink = `vless://${uuid}@${VPN_HOST}:443?encryption=none&flow=xtls-rprx-vision&type=tcp&security=reality&fp=chrome&sni=yahoo.com&pbk=${VPN_PUBLIC_KEY}&sid=&spx=%2F#${username}`;
 
   try {
     await createVpnClient(uuid, username, telegramId);
