@@ -15,6 +15,7 @@ function createApi(): AxiosInstance {
     httpAgent: new HttpCookieAgent({ cookies: { jar } }),
     httpsAgent: new HttpsCookieAgent({ cookies: { jar }, rejectUnauthorized: false }),
     withCredentials: true,
+    timeout: 5000  
   });
 }
 

@@ -30,7 +30,7 @@ export async function sendVpnConfigInfo(
   });
   await updateMenu(
     ctx,
-    `🔗 [Ссылка для подключения](${escapeMarkdown(vpnUrl)})\n` +
+    `🔗 [Ссылка для подключения, нажмите для копирования](${escapeMarkdown(vpnUrl)})\n` +
       `\`${escapeMarkdown(vpnUrl)}\``,
     Markup.inlineKeyboard([
       [{ text: '🧾 Статус', callback_data: 'status' }],

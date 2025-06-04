@@ -45,7 +45,7 @@ export async function acceptPolicy(ctx: BotContext) {
       ctx,
       `🎉 Добро пожаловать ${escapeMarkdown(username)}!\n` +
         `🗓️ Подписка активна 7 дней.\n\n` +
-        `🔗 [Ссылка для подключения](${escapeMarkdown(vpnLink)})\n` +
+        `🔗 [Ссылка для подключения, нажмите для копирования](${escapeMarkdown(vpnLink)})\n` +
         `\`${escapeMarkdown(vpnLink)}\`\n`,
       Markup.inlineKeyboard([
         [Markup.button.callback('⚙️ Статус', 'status')],
