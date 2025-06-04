@@ -38,8 +38,8 @@ export async function statusCommand(ctx: BotContext) {
   });
   
   const message =
-    `🔐 *Статус подписки*: ${statusText}` +
-    `📅 Срок действия до: ${escapeMarkdown(expiresAtFormatted)}`;
+    `🔐 *Статус подписки*: ${statusText}\n` +
+    `📅 Срок действия до: ${escapeMarkdown(expiresAtFormatted)}\n`;
   const daysLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)));
 
   return updateMenu(
@@ -50,7 +50,7 @@ export async function statusCommand(ctx: BotContext) {
       `🔐 UUID: \`${user.xrayUuid}\`\n\n` +
       message +
       `📊 Осталось: *${daysLeft} дней*\n` +
-      `🔗 [Ваша VPN-ссылка](${escapeMarkdown(user.vpnConfigUrl ?? '')})`,
+      `🔗 [Ссылка для подключения](${escapeMarkdown(user.vpnConfigUrl ?? '')})`,
     Markup.inlineKeyboard([
       [{ text: '🧾 Статус', callback_data: 'status' }],
       [{ text: '🔁 Продлить', callback_data: 'extend' }],
