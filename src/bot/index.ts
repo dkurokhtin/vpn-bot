@@ -1,7 +1,7 @@
 import { Telegraf } from 'telegraf';
 import { BotContext } from './context';
 import dotenv from 'dotenv';
-import { startCommand } from './commands/start';
+import { startCommand, acceptPolicy } from './commands/start';
 import { statusCommand } from './commands/status';
 import { balanceCommand } from './commands/balance';
 import { qrCommand } from './commands/qr';
@@ -18,6 +18,7 @@ export function registerActions(bot: Telegraf<BotContext>) {
     bot.action('status', wrapCallbackAction(statusCommand));
     bot.action('extend', wrapCallbackAction(extendCommand));
     bot.action('get_qr', wrapCallbackAction(qrCommand));
+    bot.action('accept_policy', wrapCallbackAction(acceptPolicy));
   }
 dotenv.config();
 export const bot = new Telegraf<BotContext>(process.env.BOT_TOKEN!);

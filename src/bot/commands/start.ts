@@ -9,7 +9,7 @@ import { updateMenu } from '../../utils/updateMenu';
 import { escapeMarkdown } from '../../utils/escapeMarkdown';
 import { statusCommand } from './status';
 
-export async function startCommand(ctx: BotContext) {
+export async function acceptPolicy(ctx: BotContext) {
   const guideLink = `https://dkurokhtin.github.io/vpn-docs/#/`;
   const telegramId = ctx.from?.id;
 
@@ -23,33 +23,55 @@ export async function startCommand(ctx: BotContext) {
   const uuid = uuidv4();
   const vpnLink = `vless://${uuid}@${process.env.VPN_HOST}:443?encryption=none&flow=xtls-rprx-vision&type=tcp&security=reality&fp=chrome&sni=yahoo.com&pbk=${process.env.VPN_PUBLIC_KEY}&sid=&spx=%2F#${username}`;
 
+  try {
+    await createVpnClient(uuid, username, telegramId);
 
+    await User.create({
+      telegramId,
+      username,
+      balance: 0,
+      subscriptionEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 дней
+      xrayUuid: uuid,
+      vpnConfigUrl: vpnLink,
+    });
 
-    try {
-      await createVpnClient(uuid, username, telegramId);
-
-     const user = await User.create({
-        telegramId,
-        username,
-        balance: 0,
-        subscriptionEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 дней
-        xrayUuid: uuid,
-        vpnConfigUrl: vpnLink
-      });
-
-      return updateMenu(
-        ctx,
-        `🎉 Добро пожаловать ${escapeMarkdown(username)}!\n` +
-          `🗓️ Подписка активна 7 дней.\n\n` +
-          `🔗 [Ваша VPN-ссылка](${escapeMarkdown(vpnLink)})\n`,
-        Markup.inlineKeyboard([
-          [Markup.button.callback('⚙️ Статус', 'status')],
-          [Markup.button.url('📖 Инструкция по подключению', guideLink)]
-        ])
-      );
-      
+    return updateMenu(
+      ctx,
+      `🎉 Добро пожаловать ${escapeMarkdown(username)}!\n` +
+        `🗓️ Подписка активна 7 дней.\n\n` +
+        `🔗 [Ваша VPN-ссылка](${escapeMarkdown(vpnLink)})\n`,
+      Markup.inlineKeyboard([
+        [Markup.button.callback('⚙️ Статус', 'status')],
+        [Markup.button.url('📖 Инструкция по подключению', guideLink)],
+      ])
+    );
   } catch (error: any) {
     logger.error('❌ Ошибка при создании клиента в XUI:', error.message);
     return ctx.reply('❌ Не удалось создать VPN-доступ. Обратитесь в поддержку.');
   }
+}
+
+export async function startCommand(ctx: BotContext) {
+  const privacyLink =
+    'https://github.com/dkurokhtin/vpn-docs/blob/main/vpn_legal_docs.md';
+  const telegramId = ctx.from?.id;
+
+  if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
+
+  if (ctx.state.user) {
+    return statusCommand(ctx);
+  }
+
+  const username = ctx.from?.username || `user_${telegramId}`;
+
+  return updateMenu(
+    ctx,
+    `👋 Добро пожаловать, ${escapeMarkdown(
+      username
+    )}!\nПеред получением 7-дневной подписки ознакомьтесь с нашей политикой конфиденциальности.`,
+    Markup.inlineKeyboard([
+      [Markup.button.url('📄 Политика конфиденциальности', privacyLink)],
+      [Markup.button.callback('✅ Я согласен', 'accept_policy')],
+    ])
+  );
 }
