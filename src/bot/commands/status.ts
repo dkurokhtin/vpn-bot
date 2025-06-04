@@ -28,8 +28,8 @@ export async function statusCommand(ctx: Context) {
     timeStyle: 'short',
   });
   
-  const message = `🔐 *Статус подписки*\n${statusText}\n` +
-                  `📅 Срок действия до: ${expiresAtFormatted}\n`;
+  const message = `🔐 *Статус подписки*: ${statusText}` +
+                  `📅 Срок действия до: ${expiresAtFormatted}`;
   
 
   const expiresDate = new Date(expiresAt).toLocaleString('ru-RU');

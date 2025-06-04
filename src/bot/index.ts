@@ -4,25 +4,26 @@ import { startCommand } from './commands/start';
 import { statusCommand } from './commands/status';
 import { balanceCommand } from './commands/balance';
 import { qrCommand } from './commands/qr';
-
-
-
-
 import { extendCommand } from './commands/extend';
-
 import logger from '../logger';
 import wrapCallbackAction from '../utils/wrapCallbackAction';
 import { configCommand } from './commands/config';
+import { loadUser } from './middleware/loadUser';
+import mongoose from 'mongoose';
+import { mongooseSession } from '../session';
 
 export function registerActions(bot: Telegraf<any>) {
-    // регистрируем действие на кнопку "📲 Получить QR-код"
+
     bot.action('status', wrapCallbackAction(statusCommand));
     bot.action('extend', wrapCallbackAction(extendCommand));
     bot.action('get_qr', wrapCallbackAction(qrCommand));
   }
 dotenv.config();
 export const bot = new Telegraf(process.env.BOT_TOKEN!);
-
+mongoose.connect(process.env.MONGO_URI!, {
+  dbName: 'vpn-bot',
+});
+bot.use(mongooseSession);
  // Лог всех входящих апдейтов (сообщения, команды, кнопки)
 bot.use((ctx, next) => {
     const user = ctx.from?.username || `ID:${ctx.from?.id}`;
@@ -42,10 +43,13 @@ bot.use((ctx, next) => {
   
     return next();
   });
-
+bot.use(loadUser);
 // ✅ Команды
 bot.start(startCommand);
 bot.command('get_qr',qrCommand);
+bot.command('terms', (ctx) =>
+  ctx.reply('📄 Ознакомьтесь с условиями использования сервиса и политикой конфиденциальности:\n\nhttps://github.com/dkurokhtin/vpn-docs/blob/main/vpn_legal_docs.md')
+);
 bot.command('status', statusCommand);
 bot.command('balance', balanceCommand);
 bot.command('config', configCommand);
@@ -54,9 +58,6 @@ bot.command('extend', extendCommand);
 // ✅ Callback-кнопки с обёрткой
 registerActions(bot);
 
-
-
-  
 // ✅ Запуск
 bot.launch().then(() => logger.info('🚀 Бот запущен'));
 
