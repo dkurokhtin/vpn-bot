@@ -15,14 +15,23 @@ export async function updateMenu(
       await ctx.editMessageText(text, extra);
       (ctx.session as any).menuMessageId = ctx.callbackQuery.message.message_id;
       return;
-    } catch (_) {}
+    } catch (err: any) {
+      // Ignore "message is not modified" errors to avoid sending duplicate menus
+      if (err.description?.includes('message is not modified')) {
+        return;
+      }
+    }
   }
 
   if (chatId && storedId) {
     try {
       await ctx.telegram.editMessageText(chatId, storedId, undefined, text, extra);
       return;
-    } catch (_) {}
+    } catch (err: any) {
+      if (err.description?.includes('message is not modified')) {
+        return;
+      }
+    }
   }
 
   if (chatId) {
