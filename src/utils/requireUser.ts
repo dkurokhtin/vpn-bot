@@ -1,8 +1,9 @@
-import { Context, MiddlewareFn } from 'telegraf';
+import { MiddlewareFn } from 'telegraf';
+import { BotContext } from '../bot/context';
 
 
-export function requireUser(handler: MiddlewareFn<Context>) {
-    return async (ctx:Context, next:any) => {
+export function requireUser(handler: MiddlewareFn<BotContext>) {
+    return async (ctx: BotContext, next: any) => {
       if (!ctx.state.user) {
         return ctx.reply('❌ Сначала используйте /start');
       }

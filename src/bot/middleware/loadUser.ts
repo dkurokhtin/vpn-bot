@@ -1,8 +1,9 @@
-import { Context, MiddlewareFn } from 'telegraf';
+import { MiddlewareFn } from 'telegraf';
+import { BotContext } from '../context';
 import User from '../../db/models/User';
 
 
-export const loadUser: MiddlewareFn<Context> = async (ctx, next) => {
+export const loadUser: MiddlewareFn<BotContext> = async (ctx, next) => {
   const telegramId = ctx.from?.id;
   if (!telegramId) return next();
 

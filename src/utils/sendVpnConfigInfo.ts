@@ -1,9 +1,10 @@
-import { Context, Markup } from 'telegraf';
+import { Markup } from 'telegraf';
 import QRCode from 'qrcode';
 import { updateMenu } from './updateMenu';
+import { BotContext } from '../bot/context';
 
 export async function sendVpnConfigInfo(
-    ctx: Context,
+    ctx: BotContext,
     user: {
       vpnConfigUrl?: string | null;
       username?: string | null;

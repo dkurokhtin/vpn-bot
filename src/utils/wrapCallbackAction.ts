@@ -1,10 +1,10 @@
-import { Context } from 'telegraf';
 import logger from '../logger';
+import { BotContext } from '../bot/context';
 
 export default function wrapCallbackAction(
-  handler: (ctx: Context) => Promise<any> | void
+  handler: (ctx: BotContext) => Promise<any> | void
 ) {
-  return async (ctx: Context) => {
+  return async (ctx: BotContext) => {
     try {
       await ctx.answerCbQuery(); // закрываем "часики"
       await handler(ctx);
