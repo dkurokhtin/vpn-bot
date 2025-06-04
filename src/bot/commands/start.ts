@@ -53,7 +53,7 @@ export async function acceptPolicy(ctx: BotContext) {
       ])
     );
   } catch (error: any) {
-    logger.error('❌ Ошибка при создании клиента в XUI:', error.message);
+    logger.error({ err: error }, '❌ Ошибка при создании клиента в XUI');
     return ctx.reply('❌ Не удалось создать VPN-доступ. Обратитесь в поддержку.');
   }
 }
