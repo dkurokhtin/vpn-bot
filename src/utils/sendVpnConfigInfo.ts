@@ -30,7 +30,8 @@ export async function sendVpnConfigInfo(
   });
   await updateMenu(
     ctx,
-    `🔗 [Ссылка для подключения](${escapeMarkdown(vpnUrl)})`,
+    `🔗 [Ссылка для подключения](${escapeMarkdown(vpnUrl)})\n` +
+      `\`${escapeMarkdown(vpnUrl)}\``,
     Markup.inlineKeyboard([
       [{ text: '🧾 Статус', callback_data: 'status' }],
       [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
