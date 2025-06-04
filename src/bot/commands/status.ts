@@ -1,6 +1,7 @@
 import { Markup } from 'telegraf';
 import User from '../../db/models/User';
 import { updateMenu } from '../../utils/updateMenu';
+import { escapeMarkdown } from '../../utils/escapeMarkdown';
 import { BotContext } from '../context';
 
 export async function statusCommand(ctx: BotContext) {
@@ -31,19 +32,20 @@ export async function statusCommand(ctx: BotContext) {
   
   const message =
     `🔐 *Статус подписки*: ${statusText}` +
-    `📅 Срок действия до: ${expiresAtFormatted}`;
+    `📅 Срок действия до: ${escapeMarkdown(expiresAtFormatted)}`;
   const daysLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)));
 
   return updateMenu(
     ctx,
     `📡 *Личный кабинет*\n\n` +
-      `👤 Пользователь: @${username}\n` +
+      `👤 Пользователь: @${escapeMarkdown(username)}\n` +
       `🆔 Telegram ID: ${telegramId}\n` +
       `🔐 UUID: \`${user.xrayUuid}\`\n\n` +
       message +
       `📊 Осталось: *${daysLeft} дней*\n` +
-      `🔗 [Ваша VPN-ссылка](${user.vpnConfigUrl})`,
+      `🔗 [Ваша VPN-ссылка](${escapeMarkdown(user.vpnConfigUrl ?? '')})`,
     Markup.inlineKeyboard([
+      [{ text: '🧾 Статус', callback_data: 'status' }],
       [{ text: '🔁 Продлить', callback_data: 'extend' }],
       [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
       [Markup.button.url('📖 Инструкция', guideLink)]
