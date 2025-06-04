@@ -20,6 +20,8 @@ export async function updateMenu(
       if (err.description?.includes('message is not modified')) {
         return;
       }
+      // remove invalid stored message id so we can send a fresh message
+      delete (ctx.session as any).menuMessageId;
     }
   }
 
@@ -31,6 +33,7 @@ export async function updateMenu(
       if (err.description?.includes('message is not modified')) {
         return;
       }
+      delete (ctx.session as any).menuMessageId;
     }
   }
 
