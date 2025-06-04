@@ -1,5 +1,6 @@
 import { Context, Markup } from 'telegraf';
 import QRCode from 'qrcode';
+import { updateMenu } from './updateMenu';
 
 export async function sendVpnConfigInfo(
     ctx: Context,
@@ -25,17 +26,14 @@ export async function sendVpnConfigInfo(
   await ctx.replyWithPhoto({ source: qrBuffer }, {
     caption: '📲 Отсканируйте QR-код для подключения'
   });
-  await ctx.reply(
+  await updateMenu(
+    ctx,
     `🔗 *Ссылка для подключения:*\n\`\`\`\n${vpnUrl}\n\`\`\``,
-    {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [{ text: '🧾 Статус', callback_data: 'status' }],
-        [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
-        [{ text: '📖 Инструкция по подключению', url: guideLink }]
-      ])
-      
-    }
+    Markup.inlineKeyboard([
+      [{ text: '🧾 Статус', callback_data: 'status' }],
+      [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
+      [{ text: '📖 Инструкция по подключению', url: guideLink }]
+    ])
   );
 
 

@@ -1,6 +1,7 @@
 import { Context } from 'telegraf';
 import User from '../../db/models/User';
 import { Markup } from 'telegraf';
+import { updateMenu } from '../../utils/updateMenu';
 
 export async function statusCommand(ctx: Context) {
   const telegramId = ctx.from?.id;
@@ -35,21 +36,19 @@ export async function statusCommand(ctx: Context) {
   const expiresDate = new Date(expiresAt).toLocaleString('ru-RU');
   const daysLeft = Math.max(0, Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24)));
 
-  return ctx.reply(
+  return updateMenu(
+    ctx,
     `📡 *Личный кабинет*\n\n` +
-    `👤 Пользователь: @${username}\n` +
-    `🆔 Telegram ID: ${telegramId}\n` +
-    `🔐 UUID: \`${user.xrayUuid}\`\n\n` +
-    message +
-    `📊 Осталось: *${daysLeft} дней*\n` +
-    `🔗 Ваша VPN-ссылка:\n\`\`\`\n${user.vpnConfigUrl}\n\`\`\``,
-    {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [{text:'🔁 Продлить', callback_data:'extend'}],
-        [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
-        [Markup.button.url('📖 Инструкция', guideLink)]
-      ])
-    }
+      `👤 Пользователь: @${username}\n` +
+      `🆔 Telegram ID: ${telegramId}\n` +
+      `🔐 UUID: \`${user.xrayUuid}\`\n\n` +
+      message +
+      `📊 Осталось: *${daysLeft} дней*\n` +
+      `🔗 Ваша VPN-ссылка:\n\`\`\`\n${user.vpnConfigUrl}\n\`\`\``,
+    Markup.inlineKeyboard([
+      [{ text: '🔁 Продлить', callback_data: 'extend' }],
+      [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
+      [Markup.button.url('📖 Инструкция', guideLink)]
+    ])
   );
 }
