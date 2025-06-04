@@ -1,5 +1,6 @@
-import { Context, Markup } from 'telegraf';
+import { Context } from 'telegraf';
 import QRCode from 'qrcode';
+import { mainMenu, guideLink } from '../bot/menu';
 
 export async function sendVpnConfigInfo(
     ctx: Context,
@@ -9,7 +10,6 @@ export async function sendVpnConfigInfo(
       subscriptionEndsAt?: Date | null;
     }
   ) {
-  const guideLink = 'https://dkurokhtin.github.io/vpn-docs/#/';
   const vpnUrl = user.vpnConfigUrl;
 
   if (!vpnUrl) {
@@ -29,12 +29,7 @@ export async function sendVpnConfigInfo(
     `🔗 *Ссылка для подключения:*\n\`\`\`\n${vpnUrl}\n\`\`\``,
     {
       parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [{ text: '🧾 Статус', callback_data: 'status' }],
-        [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
-        [{ text: '📖 Инструкция по подключению', url: guideLink }]
-      ])
-      
+      ...mainMenu()
     }
   );
 

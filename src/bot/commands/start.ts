@@ -1,26 +1,16 @@
-import { Context, Markup } from 'telegraf';
+import { Context } from 'telegraf';
 import User from '../../db/models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { createVpnClient } from '../../services/xuiService';
 import logger from '../../logger';
+import { mainMenu, guideLink } from '../menu';
 
 export async function startCommand(ctx: Context) {
-  const guideLink = `https://dkurokhtin.github.io/vpn-docs/#/`
   const telegramId = ctx.from?.id;
   const username = ctx.from?.username || `user_${telegramId}`;
   if (!telegramId) return ctx.reply("Ошибка: не удалось получить ваш Telegram ID");
 
   let user = await User.findOne({ telegramId });
-await User.updateOne(
-        { telegramId: 394971301 },
-        {
-          $set: {
-            subscriptionEndsAt: new Date(Date.now() - 60 * 1000),
-            disabled: false,
-            notifiedExpired: false
-          }
-        }
-      );
   if (user) {
     
     return ctx.reply(
@@ -30,11 +20,7 @@ await User.updateOne(
         `\`\`\`\n${user.vpnConfigUrl}\n\`\`\``,
         {
           parse_mode: 'Markdown',
-          ...Markup.inlineKeyboard([
-            [Markup.button.callback('📊 Статус', 'status')],
-            [Markup.button.callback('🔁 Продлить подписку', 'extend')],
-            [Markup.button.url('📖 Инструкция', guideLink)]
-          ])
+          ...mainMenu()
         }
       );
     
@@ -61,10 +47,10 @@ await User.updateOne(
         `🗓️ Подписка активна 7 дней.\n\n` +
         `🔗 Ваша VPN-ссылка (скопируйте вручную):\n\`\`\`\n${vpnLink}\n\`\`\`\n\n` +
         `⚙️ Инструкция по подключению для iPhone:\n${guideLink}`,
-        { parse_mode: 'Markdown', ...Markup.inlineKeyboard([
-            [Markup.button.callback('⚙️ Статус', 'status')],
-            [Markup.button.url('📖 Инструкция', guideLink)]
-          ])}
+        {
+          parse_mode: 'Markdown',
+          ...mainMenu()
+        }
       );
   } catch (error: any) {
     logger.error('❌ Ошибка при создании клиента в XUI:', error.message);

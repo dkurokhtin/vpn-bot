@@ -1,11 +1,10 @@
 import { Context } from 'telegraf';
 import User from '../../db/models/User';
-import { Markup } from 'telegraf';
+import { mainMenu, guideLink } from '../menu';
 
 export async function statusCommand(ctx: Context) {
   const telegramId = ctx.from?.id;
   const username = ctx.from?.username || `user_${telegramId}`;
-  const guideLink = 'https://dkurokhtin.github.io/vpn-docs/#/';
 
   if (!telegramId) {
     return ctx.reply('❌ Ошибка: не удалось определить ваш Telegram ID');
@@ -36,11 +35,7 @@ export async function statusCommand(ctx: Context) {
     `🔗 Ваша VPN-ссылка:\n\`\`\`\n${user.vpnConfigUrl}\n\`\`\``,
     {
       parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [{text:'🔁 Продлить', callback_data:'extend'}],
-        [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
-        [Markup.button.url('📖 Инструкция', guideLink)]
-      ])
+      ...mainMenu()
     }
   );
 }

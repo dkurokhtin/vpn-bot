@@ -9,6 +9,7 @@ import { qrCommand } from './commands/qr';
 
 
 import { extendCommand } from './commands/extend';
+import { mainMenu } from './menu';
 
 import logger from '../logger';
 import wrapCallbackAction from '../utils/wrapCallbackAction';
@@ -22,6 +23,14 @@ export function registerActions(bot: Telegraf<any>) {
   }
 dotenv.config();
 export const bot = new Telegraf(process.env.BOT_TOKEN!);
+bot.telegram.setMyCommands([
+  { command: 'start', description: 'Начать работу' },
+  { command: 'status', description: 'Статус подписки' },
+  { command: 'get_qr', description: 'Получить QR-код' },
+  { command: 'config', description: 'Получить конфиг' },
+  { command: 'extend', description: 'Продлить подписку' },
+  { command: 'balance', description: 'Баланс' }
+]);
 
  // Лог всех входящих апдейтов (сообщения, команды, кнопки)
 bot.use((ctx, next) => {
