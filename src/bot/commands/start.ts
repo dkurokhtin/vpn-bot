@@ -17,6 +17,10 @@ export async function acceptPolicy(ctx: BotContext) {
   if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
 
   if (ctx.state.user) {
+    if (!ctx.state.user.acceptedPolicy) {
+      ctx.state.user.acceptedPolicy = true;
+      await ctx.state.user.save();
+    }
     return statusCommand(ctx);
   }
 
@@ -33,6 +37,7 @@ export async function acceptPolicy(ctx: BotContext) {
       balance: 0,
       subscriptionEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 дней
       xrayUuid: uuid,
+      acceptedPolicy: true,
       vpnConfigUrl: vpnLink,
     });
 
@@ -60,7 +65,9 @@ export async function startCommand(ctx: BotContext) {
   if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
 
   if (ctx.state.user) {
-    return statusCommand(ctx);
+    if (ctx.state.user.acceptedPolicy) {
+      return statusCommand(ctx);
+    }
   }
 
   const username = ctx.from?.username || `user_${telegramId}`;
