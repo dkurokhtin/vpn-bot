@@ -10,6 +10,10 @@ export const loadUser: MiddlewareFn<BotContext> = async (ctx, next) => {
   const user = await User.findOne({ telegramId });
   if (user) {
     ctx.state.user = user;
+    if (user.acceptedPolicy !== true && (user.vpnConfigUrl || user.xrayUuid)) {
+      user.acceptedPolicy = true;
+      await user.save();
+    }
   }
 
   return next();
