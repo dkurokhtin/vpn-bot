@@ -8,6 +8,7 @@ const userSchema = new Schema({
   subscriptionEndsAt: Date,
   vpnConfigUrl: String,
   xrayUuid: String,
+  acceptedPolicy: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   disabled: { type: Boolean, default: false },
 });
