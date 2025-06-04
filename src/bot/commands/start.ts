@@ -40,7 +40,7 @@ export async function startCommand(ctx: BotContext) {
         ctx,
         `🎉 Добро пожаловать ${username}!\n` +
           `🗓️ Подписка активна 7 дней.\n\n` +
-          `🔗 Ваша VPN-ссылка:\n\`\`\`\n${vpnLink}\n\`\`\`\n`,
+          `🔗 [Ваша VPN-ссылка](${vpnLink})\n`,
         Markup.inlineKeyboard([
           [Markup.button.callback('⚙️ Статус', 'status')],
           [Markup.button.url('📖 Инструкция по подключению', guideLink)]
