@@ -59,8 +59,27 @@ bot.command('extend', extendCommand);
 // ✅ Callback-кнопки с обёрткой
 registerActions(bot);
 
-// ✅ Запуск
-bot.launch().then(() => logger.info('🚀 Бот запущен'));
+// ✅ Запуск с повторными попытками при ошибке
+async function launchBot(attempt = 0): Promise<void> {
+  try {
+    await bot.launch();
+    logger.info('🚀 Бот запущен');
+  } catch (err) {
+    logger.error({ err }, '❌ Ошибка запуска бота');
+    if (attempt < 5) {
+      const delay = 10_000;
+      logger.warn(`⏳ Повторная попытка запуска через ${delay / 1000}с`);
+      setTimeout(() => {
+        launchBot(attempt + 1).catch(() => {});
+      }, delay);
+    } else {
+      logger.error('❌ Не удалось запустить бота после нескольких попыток');
+      process.exit(1);
+    }
+  }
+}
+
+launchBot().catch(() => {});
 
 // ✅ Глобальный перехват ошибок
 process.on('unhandledRejection', (reason) => {
