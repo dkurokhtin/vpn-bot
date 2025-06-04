@@ -3,6 +3,7 @@ import User from '../../db/models/User';
 import { updateMenu } from '../../utils/updateMenu';
 import { escapeMarkdown } from '../../utils/escapeMarkdown';
 import { BotContext } from '../context';
+import logger from '../../logger';
 
 export async function statusCommand(ctx: BotContext) {
   const telegramId = ctx.from?.id;
@@ -13,7 +14,13 @@ export async function statusCommand(ctx: BotContext) {
     return ctx.reply('❌ Ошибка: не удалось определить ваш Telegram ID');
   }
 
-  const user = await User.findOne({ telegramId });
+  let user;
+  try {
+    user = await User.findOne({ telegramId });
+  } catch (err) {
+    logger.error({ err }, 'Failed to load user for status');
+    return ctx.reply('❌ Не удалось получить данные пользователя. Попробуйте позднее.');
+  }
 
   if (!user) {
     return ctx.reply('Вы ещё не зарегистрированы. Используйте /start');

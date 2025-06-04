@@ -64,10 +64,14 @@ export async function startCommand(ctx: BotContext) {
 
   if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
 
-  if (ctx.state.user) {
-    if (ctx.state.user.acceptedPolicy) {
-      return statusCommand(ctx);
+  try {
+    if (ctx.state.user) {
+      if (ctx.state.user.acceptedPolicy) {
+        return statusCommand(ctx);
+      }
     }
+  } catch (err) {
+    logger.error({ err }, 'Failed to handle start command');
   }
 
   const username = ctx.from?.username || `user_${telegramId}`;
