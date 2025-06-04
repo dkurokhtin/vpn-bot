@@ -30,10 +30,10 @@ export async function updateMenu(
       await ctx.telegram.editMessageText(chatId, storedId, undefined, text, extra);
       return;
     } catch (err: any) {
-      if (err.description?.includes('message is not modified')) {
-        return;
+      // If the message wasn't modified, still send a new one for convenience
+      if (!err.description?.includes('message is not modified')) {
+        delete (ctx.session as any).menuMessageId;
       }
-      delete (ctx.session as any).menuMessageId;
     }
   }
 

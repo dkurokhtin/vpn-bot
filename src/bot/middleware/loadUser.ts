@@ -3,14 +3,10 @@ import { BotContext } from '../context';
 import User from '../../db/models/User';
 import logger from '../../logger';
 
-
 export const loadUser: MiddlewareFn<BotContext> = async (ctx, next) => {
   const telegramId = ctx.from?.id;
   if (!telegramId) return next();
 
-  const user = await User.findOne({ telegramId });
-  if (user) {
-    ctx.state.user = user;
   try {
     const user = await User.findOne({ telegramId });
     if (user) {
