@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
+import { MONGODB_URI } from '../config';
 
-
-mongoose.connect(process.env.MONGODB_URI!)
+mongoose
+  .connect(MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
