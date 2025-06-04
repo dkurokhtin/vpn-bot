@@ -1,6 +1,7 @@
 import { Markup } from 'telegraf';
 import QRCode from 'qrcode';
 import { updateMenu } from './updateMenu';
+import { escapeMarkdown } from './escapeMarkdown';
 import { BotContext } from '../bot/context';
 
 export async function sendVpnConfigInfo(
@@ -29,7 +30,7 @@ export async function sendVpnConfigInfo(
   });
   await updateMenu(
     ctx,
-    `🔗 [Ссылка для подключения](${vpnUrl})`,
+    `🔗 [Ссылка для подключения](${escapeMarkdown(vpnUrl)})`,
     Markup.inlineKeyboard([
       [{ text: '🧾 Статус', callback_data: 'status' }],
       [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],

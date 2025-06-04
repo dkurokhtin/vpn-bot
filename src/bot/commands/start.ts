@@ -6,6 +6,7 @@ import { createVpnClient } from '../../services/xuiService';
 
 import logger from '../../logger';
 import { updateMenu } from '../../utils/updateMenu';
+import { escapeMarkdown } from '../../utils/escapeMarkdown';
 import { statusCommand } from './status';
 
 export async function startCommand(ctx: BotContext) {
@@ -38,9 +39,9 @@ export async function startCommand(ctx: BotContext) {
 
       return updateMenu(
         ctx,
-        `🎉 Добро пожаловать ${username}!\n` +
+        `🎉 Добро пожаловать ${escapeMarkdown(username)}!\n` +
           `🗓️ Подписка активна 7 дней.\n\n` +
-          `🔗 [Ваша VPN-ссылка](${vpnLink})\n`,
+          `🔗 [Ваша VPN-ссылка](${escapeMarkdown(vpnLink)})\n`,
         Markup.inlineKeyboard([
           [Markup.button.callback('⚙️ Статус', 'status')],
           [Markup.button.url('📖 Инструкция по подключению', guideLink)]
