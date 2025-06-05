@@ -74,6 +74,9 @@ export async function startCommand(ctx: BotContext) {
 
   if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
 
+  // Всегда отправляем новое приветствие, чтобы пользователь видел ответ внизу чата
+  delete (ctx.session as any).menuMessageId;
+
   try {
     let user = ctx.state.user;
 
