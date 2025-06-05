@@ -16,9 +16,18 @@ export async function updateMenu(
       (ctx.session as any).menuMessageId = ctx.callbackQuery.message.message_id;
       return;
     } catch (err: any) {
-      // Ignore "message is not modified" errors to avoid sending duplicate menus
       if (err.description?.includes('message is not modified')) {
-        return;
+        // try to update the keyboard even if text didn't change
+        try {
+          await ctx.editMessageReplyMarkup(extra.reply_markup);
+          (ctx.session as any).menuMessageId = ctx.callbackQuery.message.message_id;
+          return;
+        } catch (err2: any) {
+          // Ignore if nothing changed
+          if (err2.description?.includes('message is not modified')) {
+            return;
+          }
+        }
       }
       // remove invalid stored message id so we can send a fresh message
       delete (ctx.session as any).menuMessageId;
@@ -30,6 +39,17 @@ export async function updateMenu(
       await ctx.telegram.editMessageText(chatId, storedId, undefined, text, extra);
       return;
     } catch (err: any) {
+      if (err.description?.includes('message is not modified')) {
+        // update keyboard when text stays the same
+        try {
+          await ctx.telegram.editMessageReplyMarkup(chatId, storedId, undefined, extra.reply_markup);
+          return;
+        } catch (err2: any) {
+          if (err2.description?.includes('message is not modified')) {
+            return;
+          }
+        }
+      }
       // If the message wasn't modified, still send a new one for convenience
       if (!err.description?.includes('message is not modified')) {
         delete (ctx.session as any).menuMessageId;
