@@ -16,6 +16,18 @@ export async function acceptPolicy(ctx: BotContext) {
 
   if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
 
+  // Delete the policy message after successful confirmation
+  if (ctx.callbackQuery && 'message' in ctx.callbackQuery && ctx.callbackQuery.message) {
+    try {
+      const chatId = ctx.callbackQuery.message.chat.id;
+      const messageId = ctx.callbackQuery.message.message_id;
+      await ctx.telegram.deleteMessage(chatId, messageId);
+    } catch (err: any) {
+      logger.warn({ err }, 'Не удалось удалить сообщение с политикой');
+    }
+    delete (ctx.session as any).menuMessageId;
+  }
+
   if (ctx.state.user) {
     if (!ctx.state.user.acceptedPolicy) {
       ctx.state.user.acceptedPolicy = true;
