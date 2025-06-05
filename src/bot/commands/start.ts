@@ -59,7 +59,8 @@ export async function acceptPolicy(ctx: BotContext) {
       Markup.inlineKeyboard([
         [Markup.button.callback('⚙️ Статус', 'status')],
         [Markup.button.url('📖 Инструкция по подключению', guideLink)],
-      ])
+      ]),
+      { forceNew: true }
     );
   } catch (error: any) {
     logger.error({ err: error }, '❌ Ошибка при создании клиента в XUI');

@@ -4,11 +4,23 @@ import { BotContext } from '../bot/context';
 export async function updateMenu(
   ctx: BotContext,
   text: string,
-  keyboard: ReturnType<typeof Markup.inlineKeyboard>
+  keyboard: ReturnType<typeof Markup.inlineKeyboard>,
+  options?: { forceNew?: boolean }
 ) {
+  const forceNew = options?.forceNew;
   const extra = { parse_mode: 'Markdown', reply_markup: keyboard.reply_markup } as any;
   const chatId = ctx.chat?.id;
   const storedId = (ctx.session as any)?.menuMessageId;
+
+  if (forceNew) {
+    if (chatId) {
+      const msg = await ctx.telegram.sendMessage(chatId, text, extra);
+      (ctx.session as any).menuMessageId = msg.message_id;
+    } else {
+      await ctx.reply(text, extra);
+    }
+    return;
+  }
 
   if (ctx.callbackQuery && 'message' in ctx.callbackQuery && ctx.callbackQuery.message) {
     try {
