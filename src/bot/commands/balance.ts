@@ -13,6 +13,6 @@ export async function balanceCommand(ctx: BotContext) {
   return updateMenu(
     ctx,
     `💰 Ваш баланс: ${user.balance} ₽`,
-    Markup.inlineKeyboard([[Markup.button.callback('🧾 Статус', 'status')]])
+    Markup.inlineKeyboard([[Markup.button.callback('📋 Меню', 'menu')]])
   );
 }

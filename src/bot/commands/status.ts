@@ -53,7 +53,7 @@ export async function statusCommand(ctx: BotContext) {
       `🔗 [Ссылка для подключения, нажмите для копирования](${escapeMarkdown(user.vpnConfigUrl ?? '')})\n` +
       `\`${escapeMarkdown(user.vpnConfigUrl ?? '')}\``,
     Markup.inlineKeyboard([
-      [{ text: '🧾 Статус', callback_data: 'status' }],
+      [{ text: '📋 Меню', callback_data: 'menu' }],
       [{ text: '🔁 Продлить', callback_data: 'extend' }],
       [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
       [Markup.button.url('📖 Инструкция', guideLink)]

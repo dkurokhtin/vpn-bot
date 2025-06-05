@@ -13,12 +13,12 @@ import { loadUser } from './middleware/loadUser';
 import { mongooseSession } from '../session';
 
 export function registerActions(bot: Telegraf<BotContext>) {
-
-    bot.action('status', wrapCallbackAction(statusCommand));
-    bot.action('extend', wrapCallbackAction(extendCommand));
-    bot.action('get_qr', wrapCallbackAction(qrCommand));
-    bot.action('accept_policy', wrapCallbackAction(acceptPolicy));
-  }
+  bot.action('status', wrapCallbackAction(statusCommand));
+  bot.action('menu', wrapCallbackAction(statusCommand));
+  bot.action('extend', wrapCallbackAction(extendCommand));
+  bot.action('get_qr', wrapCallbackAction(qrCommand));
+  bot.action('accept_policy', wrapCallbackAction(acceptPolicy));
+}
 
 export const bot = new Telegraf<BotContext>(BOT_TOKEN);
 bot.use(mongooseSession);
@@ -49,6 +49,7 @@ bot.command('terms', (ctx) =>
   ctx.reply('📄 Ознакомьтесь с условиями использования сервиса и политикой конфиденциальности:\n\nhttps://github.com/dkurokhtin/vpn-docs/blob/main/vpn_legal_docs.md')
 );
 bot.command('status', statusCommand);
+bot.command('menu', statusCommand);
 bot.command('balance', balanceCommand);
 bot.command('config', configCommand);
 bot.command('extend', extendCommand);
