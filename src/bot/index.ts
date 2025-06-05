@@ -1,6 +1,6 @@
 import { Telegraf } from 'telegraf';
 import { BotContext } from './context';
-import { BOT_TOKEN, MONGODB_URI } from '../config';
+import { BOT_TOKEN } from '../config';
 import { startCommand, acceptPolicy } from './commands/start';
 import { statusCommand } from './commands/status';
 import { balanceCommand } from './commands/balance';
@@ -22,9 +22,6 @@ export function registerActions(bot: Telegraf<BotContext>) {
   }
 
 export const bot = new Telegraf<BotContext>(BOT_TOKEN);
-mongoose.connect(MONGODB_URI, {
-  dbName: 'vpn-bot',
-});
 bot.use(mongooseSession);
  // Лог всех входящих апдейтов (сообщения, команды, кнопки)
 bot.use((ctx, next) => {
