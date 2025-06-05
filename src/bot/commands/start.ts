@@ -59,7 +59,8 @@ export async function acceptPolicy(ctx: BotContext) {
       Markup.inlineKeyboard([
         [Markup.button.callback('⚙️ Статус', 'status')],
         [Markup.button.url('📖 Инструкция по подключению', guideLink)],
-      ])
+      ]),
+      { forceNew: true }
     );
   } catch (error: any) {
     logger.error({ err: error }, '❌ Ошибка при создании клиента в XUI');
@@ -73,6 +74,9 @@ export async function startCommand(ctx: BotContext) {
   const telegramId = ctx.from?.id;
 
   if (!telegramId) return ctx.reply('Ошибка: не удалось получить ваш Telegram ID');
+
+  // Всегда отправляем новое приветствие, чтобы пользователь видел ответ внизу чата
+  delete (ctx.session as any).menuMessageId;
 
   try {
     let user = ctx.state.user;
