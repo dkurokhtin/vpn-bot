@@ -33,7 +33,7 @@ export async function sendVpnConfigInfo(
     `🔗 [Ссылка для подключения, нажмите для копирования](${escapeMarkdown(vpnUrl)})\n` +
       `\`${escapeMarkdown(vpnUrl)}\``,
     Markup.inlineKeyboard([
-      [{ text: '🧾 Статус', callback_data: 'status' }],
+      [{ text: '📋 Меню', callback_data: 'menu' }],
       [{ text: '📲 Получить QR-код', callback_data: 'get_qr' }],
       [{ text: '📖 Инструкция по подключению', url: guideLink }]
     ])

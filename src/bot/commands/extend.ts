@@ -7,6 +7,6 @@ export async function extendCommand(ctx: BotContext) {
   return updateMenu(
     ctx,
     '💳 Для продления подписки обратитесь к /оплате или @dkurokhtin.',
-    Markup.inlineKeyboard([[Markup.button.callback('🧾 Статус', 'status')]])
+    Markup.inlineKeyboard([[Markup.button.callback('📋 Меню', 'menu')]])
   );
 }
