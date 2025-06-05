@@ -10,7 +10,6 @@ import logger from '../logger';
 import wrapCallbackAction from '../utils/wrapCallbackAction';
 import { configCommand } from './commands/config';
 import { loadUser } from './middleware/loadUser';
-import mongoose from 'mongoose';
 import { mongooseSession } from '../session';
 
 export function registerActions(bot: Telegraf<BotContext>) {
@@ -58,7 +57,7 @@ bot.command('extend', extendCommand);
 registerActions(bot);
 
 // ✅ Запуск с повторными попытками при ошибке
-async function launchBot(attempt = 0): Promise<void> {
+export async function launchBot(attempt = 0): Promise<void> {
   try {
     await bot.launch();
     logger.info('🚀 Бот запущен');
@@ -76,8 +75,6 @@ async function launchBot(attempt = 0): Promise<void> {
     }
   }
 }
-
-launchBot().catch(() => {});
 
 // ✅ Глобальный перехват ошибок
 process.on('unhandledRejection', (reason) => {
